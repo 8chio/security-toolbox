@@ -11,8 +11,6 @@ def analyze_jwt(payload):
     iat = payload.get('iat')
     if iat is not None:
         issued_at = datetime.fromtimestamp(iat, tz=UTC)
-        if current_time < issued_at:
-            status = "Not yet valid."
 
     nbf = payload.get('nbf')
     if nbf is not None:

@@ -2,6 +2,9 @@ from password_generator import generate_password
 from hash_generator import generate_sha256_hash
 from base64_tool import encode_base64, decode_base64
 from jwt_decoder import decode_jwt
+from jwt_generator import generate_jwt
+from jwt_verifier import verify_jwt
+import time
 import json
 
 print("=== Security Toolbox ===")
@@ -10,6 +13,8 @@ print("2. SHA256 Hash")
 print("3. Base64 Encoder")
 print("4. Base64 Decoder")
 print("5. JWT Decoder")
+print("6. JWT Generator")
+print("7. JWT Verifier")
 print("0. Exit")
 
 menu = input("Select > ")
@@ -51,6 +56,32 @@ elif menu == "5":
         print(signature)
     except ValueError as e:
         print(e)
+
+elif menu == "6":
+    print("JWT Generator를 선택했습니다.")
+    sub = input("Enter the subject (sub): ")
+    name = input("Enter the name: ")
+    role = input("Enter the role: ")
+
+    now = int(time.time())
+
+    payload = {
+        "sub": sub,
+        "name": name,
+        "role": role,
+        "iat": now,
+        "nbf": now,
+        "exp": now + 3600  # Token expires in 1 hour
+    }
+    token = generate_jwt(payload)
+    print(f"Generated JWT Token: {token}")
+
+elif menu == "7":
+    print("JWT Verifier를 선택했습니다.")
+    token = input("Enter the JWT token to verify: ")
+    secret_key = input("Enter the secret key for verification: ")
+    is_valid, message = verify_jwt(token, secret_key)
+    print(message)
 
 elif menu == "0":
     print("프로그램을 종료합니다.")

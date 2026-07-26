@@ -1,5 +1,9 @@
 from base64_tool import encode_base64_urlsafe
 import json
+import hashlib
+import hmac
+
+secret_key = "my_secret_key"  # Replace with your actual secret key for signing the JWT
 
 header = {
     "alg": "HS256",
@@ -16,17 +20,13 @@ def generate_jwt(payload):
     encoded_payload = encode_base64_urlsafe(payload_json)
 
     # Create the JWT by concatenating the encoded header and payload
-    jwt_token = f"{encoded_header}.{encoded_payload}"
+    message = f"{encoded_header}.{encoded_payload}".encode('utf-8')
+
+    # Sign the message using the secret key
+    signature = hmac.new(secret_key.encode('utf-8'), message, hashlib.sha256).digest()
+    encoded_signature = encode_base64_urlsafe(signature)
+
+    # Combine the header, payload, and signature to form the final JWT
+    jwt_token = f"{encoded_header}.{encoded_payload}.{encoded_signature}"
 
     return jwt_token
-
-payload = {
-    "sub": "1234567890",
-    "name": "John Doe",
-    "admin": True,
-    "iat": 1516239022,
-    "nbf": 1516239022,
-    "exp": 1516242622
-}
-
-print(generate_jwt(payload)) 

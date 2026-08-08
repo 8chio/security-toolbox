@@ -4,6 +4,7 @@ from base64_tool import encode_base64, decode_base64
 from jwt_decoder import decode_jwt
 from jwt_generator import generate_jwt
 from jwt_verifier import verify_jwt
+from jwt_analyzer import analyze_jwt
 import time
 import json
 
@@ -15,6 +16,7 @@ print("4. Base64 Decoder")
 print("5. JWT Decoder")
 print("6. JWT Generator")
 print("7. JWT Verifier")
+print("8. JWT Analyzer")
 print("0. Exit")
 
 menu = input("Select > ")
@@ -82,6 +84,17 @@ elif menu == "7":
     secret_key = input("Enter the secret key for verification: ")
     is_valid, message = verify_jwt(token, secret_key)
     print(message)
+
+elif menu == "8":
+    print("JWT Analyzer를 선택했습니다.")
+    token = input("Enter the JWT token to analyze: ")
+    try:
+        _, payload, _ = decode_jwt(token)
+        analysis_result = analyze_jwt(payload)
+        print("JWT Analysis Result:")
+        print(json.dumps(analysis_result, indent=4, ensure_ascii=False, default=str))
+    except ValueError as e:
+        print(e)
 
 elif menu == "0":
     print("프로그램을 종료합니다.")
